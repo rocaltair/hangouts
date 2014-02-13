@@ -1,0 +1,85 @@
+#!/bin/sh 
+#########################
+#
+# send SMS by Message on Mac
+#
+#########################
+
+usage() {
+cat << EOF
+$(basename $0):
+	-u receiver 	set other receiver
+	-h 		show help
+EOF
+}
+
+RECEIVER="Roc Altair" 		# default receiver
+
+while echo "$1" | grep -q "^\-\+\w" ; do
+	for flag in `echo $1 | grep -o "\w"`; do
+		if [ $flag = "u" ]; then
+			RECEIVER="$2"
+		elif [ $flag = "h" ]; then
+			usage
+			exit 0
+		else
+			echo error args -$flag >&2
+			usage
+			exit 1
+		fi
+	done
+	shift
+	if [ "$RECEIVER" != "" ]; then
+		shift
+	fi
+done
+
+export RECEIVER
+
+if [ "$1" != "" ] ; then
+	export CONTENT="$@"
+else
+	export CONTENT="`cat`"
+fi
+
+/usr/bin/osascript << EOF
+on isRunning(appName)
+	tell application "System Events" to (name of processes)  contains appName
+end isRunning
+
+on SendMessage()
+	tell application "Messages"
+		activate
+		set recerBuddy to 0
+		repeat with bBuddy in buddies
+			set bName to name of bBuddy
+			set bId to id of bBuddy
+			if bId ends with "google.com" and bName is equal to "$RECEIVER" then
+				-- display dialog bName & " " & bId & " "
+				set recerBuddy to bBuddy
+				-- send "hello" to bBuddy
+			end if
+		end repeat
+		
+		if recerBuddy is not 0 then
+			send "$CONTENT" to recerBuddy
+		end if
+
+		-- hide windows of "Messages"
+		tell application "Finder" 
+			set visible of application process "Messages" to false
+		end tell
+	end tell
+end SendMessage
+
+if not isRunning("Messages") then
+	tell application "Messages" to activate
+	delay 5
+end if
+
+SendMessage()
+-- beep 5
+
+EOF
+
+
