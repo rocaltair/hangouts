@@ -9,14 +9,19 @@ $(basename $0):
 EOF
 }
 
-RECEIVER="Receiver Name" 		# default receiver
-SENDER="gtalkaccount@gmail.com"		# default sender
+DEFAULT_RECEIVER="Receiver Name" 		# default receiver
+DEFAULT_SENDER="gtalkaccount@gmail.com"		# default sender
+
+RECEIVER="$DEFAULT_RECEIVER" 
+SENDER="$DEFAULT_SENDER"
 
 while echo "$1" | grep -q "^\-\+\w" ; do
 	for flag in `echo $1 | grep -o "\w"`; do
 		if [ $flag = "r" ]; then
+			NEW_RECEIVER=true
 			RECEIVER="$2"
 		elif [ $flag = "s" ]; then
+			NEW_SENDER=true
 			SENDER="$2"
 		elif [ $flag = "h" ]; then
 			usage
@@ -28,10 +33,12 @@ while echo "$1" | grep -q "^\-\+\w" ; do
 		fi
 	done
 	shift
-	if [ "$SENDER" != "" ]; then
+	if [ "$NEW_SENDER" != "" ]; then
+		NEW_SENDER=""
 		shift
 	fi
-	if [ "$RECEIVER" != "" ]; then
+	if [ "$NEW_RECEIVER" != "" ]; then
+		NEW_RECEIVER=""
 		shift
 	fi
 done
