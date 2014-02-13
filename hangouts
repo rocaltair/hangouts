@@ -13,7 +13,7 @@ $(basename $0):
 EOF
 }
 
-RECEIVER="Roc Altair" 		# default receiver
+RECEIVER="Receiver Name" 		# default receiver
 
 while echo "$1" | grep -q "^\-\+\w" ; do
 	for flag in `echo $1 | grep -o "\w"`; do
