@@ -11,7 +11,7 @@ hangouts for command line on **Mac OS X**.
 
 
 ## Configuration
-[Configuring](https://support.google.com/talk/answer/24076?hl=en) [Messages (iChat)](http://www.apple.com/macosx/features/ichat/) for [Google Talk](http://www.google.com/talk/) 
+[Configuring](https://support.google.com/talk/answer/24076?hl=en) [Messages (iChat)](http://support.apple.com/kb/HT5395) for [Google Talk](http://www.google.com/talk/) 
 
 
 
