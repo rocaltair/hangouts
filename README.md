@@ -19,19 +19,19 @@ hangouts for command line on **Mac OS X**.
 ```
 You can change the default receiver_name in the script.
 
-hangouts [-u receiver_name] message
+hangouts [-r receiver_name] [-s sender_account] message
 
 
 or from stdin with Ctrl-D end:
 
-hangouts [-u receiver_name] 
+hangouts [-r receiver_name] [-s sender_account]
 ```
 
 
 
 ## Sample
 ```
-hangouts -u "John" Hi~ John!
+hangouts -r "John" -s "sally@gmail.com" Hi~ John!
 
-cat /etc/mail.rc | hangouts -u John
+cat /etc/mail.rc | hangouts -r John -s "sally@gmail.com"
 ```

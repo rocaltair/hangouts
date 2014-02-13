@@ -1,24 +1,23 @@
 #!/bin/sh 
-#########################
-#
-# send SMS by Message on Mac
-#
-#########################
 
 usage() {
 cat << EOF
 $(basename $0):
-	-u receiver 	set other receiver
+	-r receiver 	set other receiver
+	-s sender	gtalk account
 	-h 		show help
 EOF
 }
 
 RECEIVER="Receiver Name" 		# default receiver
+SENDER="gtalkaccount@gmail.com"		# default sender
 
 while echo "$1" | grep -q "^\-\+\w" ; do
 	for flag in `echo $1 | grep -o "\w"`; do
-		if [ $flag = "u" ]; then
+		if [ $flag = "r" ]; then
 			RECEIVER="$2"
+		elif [ $flag = "s" ]; then
+			SENDER="$2"
 		elif [ $flag = "h" ]; then
 			usage
 			exit 0
@@ -29,12 +28,16 @@ while echo "$1" | grep -q "^\-\+\w" ; do
 		fi
 	done
 	shift
+	if [ "$SENDER" != "" ]; then
+		shift
+	fi
 	if [ "$RECEIVER" != "" ]; then
 		shift
 	fi
 done
 
 export RECEIVER
+export SENDER
 
 if [ "$1" != "" ] ; then
 	export CONTENT="$@"
@@ -51,7 +54,17 @@ on SendMessage()
 	tell application "Messages"
 		activate
 		set recerBuddy to 0
-		repeat with bBuddy in buddies
+
+		
+		set myBuddies to {}
+		repeat with myServ in services
+			if name of myServ as string is "$SENDER" then
+				set myBuddies to buddies of myServ
+			end if
+		end repeat
+
+
+		repeat with bBuddy in myBuddies
 			set bName to name of bBuddy
 			set bId to id of bBuddy
 			if bId ends with "google.com" and bName is equal to "$RECEIVER" then
@@ -73,8 +86,17 @@ on SendMessage()
 end SendMessage
 
 if not isRunning("Messages") then
-	tell application "Messages" to activate
-	delay 5
+	tell application "Messages"
+		activate
+		repeat with myServ in services
+			if name of myServ as string is "$SENDER" then
+				repeat while (status of myServ as string) is "offline"
+					delay 0.5
+				end repeat
+			end if
+		end repeat
+		delay 2
+	end tell
 end if
 
 SendMessage()
